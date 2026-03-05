@@ -22,7 +22,7 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<NotificationService>();
 
-//builder.Services.AddHostedService<OverdueTaskChecker>();
+builder.Services.AddHostedService<OverdueTaskChecker>();
 
 builder.Services.AddAuthentication(options =>
 {
