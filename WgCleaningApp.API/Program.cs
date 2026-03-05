@@ -22,7 +22,7 @@ builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<NotificationService>();
 
-//builder.Services.AddHostedService<OverdueTaskChecker>();
+builder.Services.AddHostedService<OverdueTaskChecker>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -93,11 +93,6 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
-}
 
 if (app.Environment.IsDevelopment())
 {
