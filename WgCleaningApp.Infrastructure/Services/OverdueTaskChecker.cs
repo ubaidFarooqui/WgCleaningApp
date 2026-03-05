@@ -15,7 +15,10 @@ public class OverdueTaskChecker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        // Run immediately on startup
+        // Wait 5 seconds to allow the app to fully start
+        await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
+
+        // Run immediately on startup if delay above is deleted
         await CheckOverdueTasks(stoppingToken);
 
         while (!stoppingToken.IsCancellationRequested)
