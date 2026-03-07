@@ -45,13 +45,23 @@ public class OverdueTaskChecker : BackgroundService
             var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
             var notifications = scope.ServiceProvider.GetRequiredService<NotificationService>();
 
+            // 1) CLEANUP OLD NOTIFICATIONS (older than 30 days)
+            var cutoffDate = DateTime.UtcNow.AddDays(-30);
+
+            var oldNotifications = context.Notifications
+                .Where(n => n.CreatedAt < cutoffDate);
+
+            context.Notifications.RemoveRange(oldNotifications);
+            await context.SaveChangesAsync(stoppingToken);
+
+            // OVERDUE TASKS CHECKER (tasks that are not completed and started more than 7 days ago)
             var cutoff = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(-7));
 
             var overdueTasks = await context.Tasks
                 .Where(t => !t.IsCompleted && t.StartDate <= cutoff)
                 .ToListAsync(stoppingToken);
 
-            // For real push notification 
+            // FOR REAL PUSH NOTIFCATIONS
             foreach (var task in overdueTasks)
             {
                 if (task.AssignedToUserId != null)
