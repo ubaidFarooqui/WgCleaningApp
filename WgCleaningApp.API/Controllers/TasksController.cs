@@ -173,5 +173,38 @@ namespace WgCleaningApp.API.Controllers
             return Ok(task);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetTaskById(Guid id)
+        {
+            var task = await _context.Tasks
+                .Include(t => t.AssignedToUser)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (task == null)
+                return NotFound();
+
+            return Ok(task);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTask(Guid id, UpdateTaskDto dto)
+        {
+            var task = await _context.Tasks.FirstOrDefaultAsync(t => t.Id == id);
+            if (task == null)
+                return NotFound();
+
+            task.UpdateDetails(dto.Title, dto.Description, dto.StartDate, dto.EndDate);
+
+            if (dto.AssignedToUserId.HasValue)
+                task.UpdateAssignedUser(dto.AssignedToUserId);
+
+            await _context.SaveChangesAsync();
+
+            return Ok(task);
+        }
+
+
+
+
     }
 }

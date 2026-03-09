@@ -51,6 +51,19 @@ namespace WgCleaningApp.Domain.Entities
         {
             AssignedToUserId = userId;
         }
+        public void UpdateDetails(string title, string description, DateOnly startDate, DateOnly? endDate)
+        {
+            Title = title;
+            Description = description;
+            StartDate = startDate;
+            EndDate = endDate;
+        }
+        public void UpdateAssignedUser(Guid? userId)
+        {
+            AssignedToUserId = userId;
+        }
+
+
     }
 
 }
